@@ -8,7 +8,6 @@
     <style>
         body { margin: 0; background: #02040a; color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden; }
         
-        /* Glassmorphism UI */
         #ui-layer { 
             position: absolute; top: 30px; left: 30px; z-index: 10;
             background: rgba(10, 20, 40, 0.85); padding: 30px; border-radius: 12px;
@@ -28,10 +27,7 @@
             border-radius: 6px; font-family: inherit;
         }
         
-        input:focus { 
-            border-color: #6fffe9; 
-            background: rgba(0,0,0,0.5); 
-        }
+        input:focus { border-color: #6fffe9; background: rgba(0,0,0,0.5); }
 
         button { 
             width: 100%; padding: 15px; background: #5bc0be; border: none; 
@@ -68,41 +64,35 @@
     const svg = d3.select("#canvas");
     const container = svg.append("g");
 
-    // Defs for Bloom/Glow effects
     const defs = svg.append("defs");
     const glow = defs.append("filter").attr("id", "atom-glow");
-    glow.append("feGaussianBlur").attr("stdDeviation", "4").attr("result", "blur");
+    glow.append("feGaussianBlur").attr("stdDeviation", "3").attr("result", "blur");
     const feMerge = glow.append("feMerge");
     feMerge.append("feMergeNode").attr("in", "blur");
     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-    // Spectral color scale for domain hubs
     const domainColorScale = d3.scaleOrdinal(d3.schemeSpectral[11]);
 
-    // Zoom and Pan behavior
     svg.call(d3.zoom().scaleExtent([0.1, 3]).on("zoom", (e) => container.attr("transform", e.transform)));
 
-    // Initial state: Singapore is the seed node
     let nodes = [{ id: "SINGAPORE_ANCHOR", label: "SINGAPORE ICC", isSeed: true, size: 28 }];
     let links = [];
 
-    // RIGID Molecular Simulation Physics
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(1)) 
-        .force("charge", d3.forceManyBody().strength(-600))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(110).strength(1)) 
+        .force("charge", d3.forceManyBody().strength(-400))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide().radius(70));
+        .force("collision", d3.forceCollide().radius(d => (d.isArea ? 60 : 30)));
 
     function update() {
-        // Render Bonds (Sticks)
+        // High visibility bonds
         const link = container.selectAll(".link").data(links, d => d.source.id + "-" + d.target.id)
             .join("line")
             .attr("class", "link")
-            .attr("stroke", "#333")
-            .attr("stroke-opacity", 0.6)
-            .attr("stroke-width", 2);
+            .attr("stroke", "#ffffff")
+            .attr("stroke-opacity", 0.4)
+            .attr("stroke-width", 2.5);
 
-        // Render Nodes (Atoms)
         const node = container.selectAll(".node").data(nodes, d => d.id)
             .join("g")
             .attr("class", "node")
@@ -112,20 +102,29 @@
                 .on("end", dragended));
 
         node.selectAll("circle").data(d => [d]).join("circle")
-            .attr("r", d => d.size || 15)
+            .attr("r", d => {
+                if (d.isSeed) return 28;
+                if (d.isArea) return 18;
+                return 6; // Smaller circles for people
+            })
             .attr("fill", "#02040a")
             .attr("stroke", d => {
                 if (d.isSeed) return "#ff4d4d"; 
                 if (d.isArea) return domainColorScale(d.label.charAt(0)); 
                 return "#6fffe9"; 
             })
-            .attr("stroke-width", 3)
+            .attr("stroke-width", d => d.isArea || d.isSeed ? 3 : 2)
             .style("filter", "url(#atom-glow)");
 
         node.selectAll("text").data(d => [d]).join("text")
             .attr("text-anchor", "middle")
-            .attr("dy", d => d.size ? d.size + 25 : 35)
-            .style("font-size", d => d.isSeed ? "12px" : (d.isArea ? "11px" : "10px"))
+            .attr("dy", d => {
+                if (d.isSeed) return 50;
+                if (d.isArea) return 40;
+                return 25;
+            })
+            .style("font-size", d => d.isSeed ? "14px" : (d.isArea ? "12px" : "9px"))
+            .style("font-weight", d => d.isArea ? "bold" : "normal") // BOLD Research Areas
             .style("fill", "#fff")
             .style("pointer-events", "none")
             .text(d => d.label.toUpperCase());
@@ -140,11 +139,10 @@
             node.attr("transform", d => `translate(${d.x},${d.y})`);
         });
 
-        document.getElementById('stats').innerText = `${nodes.length - 1} Researchers Interconnected`;
+        document.getElementById('stats').innerText = `${nodes.length - 1} Researchers Synthesized`;
     }
 
     function process(name, area) {
-        // Enforce the "One Word" rule
         area = area.trim().split(" ")[0].toUpperCase();
         if (!area) return;
 
@@ -153,15 +151,13 @@
 
         if (nodes.find(n => n.id === personId)) return;
 
-        // Ensure Area Hub exists
         let areaNode = nodes.find(n => n.id === areaId);
         if (!areaNode) {
-            areaNode = { id: areaId, label: area, isArea: true, size: 20 };
+            areaNode = { id: areaId, label: area, isArea: true };
             nodes.push(areaNode);
             links.push({ source: "SINGAPORE_ANCHOR", target: areaId });
         }
 
-        // Attach person to Area Hub
         nodes.push({ id: personId, label: name.toUpperCase() });
         links.push({ source: areaId, target: personId });
     }
@@ -180,7 +176,6 @@
                 }
             })
             .catch(err => {
-                console.warn("Initial load empty or failed. Seed active.");
                 update(); 
             });
     };
@@ -193,11 +188,9 @@
         
         if (!n || !a) return;
 
-        // Process locally for instant visual feedback
         process(n, a);
         update();
 
-        // Ensure we only send the single-word domain to the sheet
         const singleWordArea = a.trim().split(" ")[0];
         fetch(G_SCRIPT_URL, { 
             method: 'POST', 
