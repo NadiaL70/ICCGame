@@ -3,229 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICC Singapore: The Quantum Network</title>
+    <title>ICC Singapore: The Affinity Network</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        /* 1. Base Layer & Atmosphere */
         body { 
             margin: 0; 
-            background: radial-gradient(circle at center, #101935 0%, #050812 100%); 
+            background: radial-gradient(circle at center, #0d1b2a 0%, #010205 100%); 
             color: #E0E1DD; 
-            font-family: 'Avenir Next', 'Helvetica Neue', sans-serif; 
+            font-family: 'Helvetica Neue', sans-serif; 
             overflow: hidden; 
-            -webkit-font-smoothing: antialiased;
         }
-
-        /* 2. Controls - Glassmorphism UI */
         #controls { 
-            position: absolute; 
-            top: 25px; 
-            left: 25px; 
-            background: rgba(16, 25, 53, 0.6); 
-            padding: 25px; 
-            border-radius: 16px; 
-            z-index: 10; 
-            border: 1px solid rgba(111, 255, 233, 0.3); 
-            width: 270px; 
-            backdrop-filter: blur(12px); 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transition: transform 0.3s ease;
+            position: absolute; top: 30px; left: 30px; 
+            background: rgba(13, 27, 42, 0.7); 
+            padding: 30px; border-radius: 20px; z-index: 10; 
+            border: 1px solid rgba(111, 255, 233, 0.2); 
+            width: 280px; backdrop-filter: blur(15px); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
-
-        h2 { 
-            font-size: 20px; 
-            margin: 0 0 10px 0; 
-            color: #6fffe9; 
-            font-weight: 200; 
-            letter-spacing: 2px; 
-            text-transform: uppercase;
-        }
-
-        p { 
-            font-size: 13px; 
-            opacity: 0.7; 
-            margin: 0 0 20px 0; 
-            line-height: 1.5;
-        }
-
-        /* 3. Inputs - Minimal & Sleek */
+        h2 { font-size: 22px; margin: 0 0 8px 0; color: #6fffe9; font-weight: 200; letter-spacing: 3px; text-transform: uppercase; }
+        p { font-size: 12px; opacity: 0.6; margin-bottom: 20px; line-height: 1.6; }
         input { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            border-radius: 6px; 
-            border: 1px solid rgba(111, 255, 233, 0.1); 
-            background: rgba(5, 8, 18, 0.7); 
-            color: #6fffe9; 
-            box-sizing: border-box; 
-            outline: none;
-            font-family: inherit;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%; padding: 14px; margin: 10px 0; border-radius: 8px; 
+            border: 1px solid rgba(111, 255, 233, 0.1); background: rgba(0,0,0,0.4); 
+            color: #6fffe9; box-sizing: border-box; outline: none; transition: 0.3s;
         }
-
-        input:focus { 
-            border-color: rgba(111, 255, 233, 0.8); 
-            box-shadow: 0 0 10px rgba(111, 255, 233, 0.2); 
-        }
-
-        input::placeholder { color: rgba(111, 255, 233, 0.4); }
-
-        /* 4. Button - Neon Pulse */
+        input:focus { border-color: #6fffe9; background: rgba(0,0,0,0.6); }
         button { 
-            width: 100%; 
-            padding: 14px; 
-            background: linear-gradient(135deg, #5bc0be 0%, #3a506b 100%);
-            border: none; 
-            border-radius: 6px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: 15px; 
-            color: #050812; 
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(91, 192, 190, 0.3);
+            width: 100%; padding: 15px; background: #5bc0be; border: none; border-radius: 8px; 
+            font-weight: 700; cursor: pointer; margin-top: 15px; color: #0b132b; 
+            text-transform: uppercase; letter-spacing: 2px; transition: 0.4s;
         }
-
-        button:hover { 
-            box-shadow: 0 5px 25px rgba(91, 192, 190, 0.6);
-            transform: translateY(-2px);
-        }
-
-        /* 5. Stats & SVG Layer */
-        #stats { 
-            font-size: 11px; 
-            margin-top: 18px; 
-            color: #5bc0be; 
-            text-align: center; 
-            letter-spacing: 1px; 
-            text-transform: uppercase;
-            font-weight: 200;
-        }
-
-        svg { 
-            width: 100vw; 
-            height: 100vh; 
-            cursor: move;
-        }
+        button:hover { background: #6fffe9; box-shadow: 0 0 20px rgba(111, 255, 233, 0.4); }
+        #stats { font-size: 10px; margin-top: 20px; color: #5bc0be; text-align: center; opacity: 0.8; letter-spacing: 1px; }
+        svg { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
 
 <div id="controls">
-    <h2>Quantum Network</h2>
-    <p>PhD Researchers: Anchor your work to the ICC community. Add your research to synthesize the collective molecule.</p>
-    <input type="text" id="name" placeholder="Dr. Alan Smith">
-    <input type="text" id="keyword" placeholder="Enzymatic Catalysis">
-    <button onclick="addBond()">Synthesize Bond</button>
-    <div id="stats">Connecting to Network...</div>
+    <h2>ICC Ecosystem</h2>
+    <p>Synthesize your research. Your atom will naturally bond with peers in similar fields.</p>
+    <input type="text" id="name" placeholder="Name (e.g. Dr. Sato)">
+    <input type="text" id="keyword" placeholder="Research (e.g. Polymers)">
+    <button onclick="addBond()">Synthesize</button>
+    <div id="stats">Analyzing Network Affinity...</div>
 </div>
 
 <svg id="molecule"></svg>
 
 <script>
-    // PASTE YOUR URL HERE
     const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxq7zoarTNZoyoOHcYjeBmqx8h5VGd3NYqWQs6JISqUi-J_Ik-4rBa6W9kpmOpD6lNA/exec';
 
     const width = window.innerWidth;
     const height = window.innerHeight;
     const svg = d3.select("#molecule");
+    const container = svg.append("g");
 
-    // Add SVG filters (Glow effect)
+    // Glow Filter
     const defs = svg.append("defs");
-    const glowFilter = defs.append("filter")
-        .attr("id", "glow")
-        .attr("x", "-50%")
-        .attr("y", "-50%")
-        .attr("width", "200%")
-        .attr("height", "200%");
-    glowFilter.append("feGaussianBlur").attr("stdDeviation", "4").attr("result", "coloredBlur");
-    const feMerge = glowFilter.append("feMerge");
+    const filter = defs.append("filter").attr("id", "glow");
+    filter.append("feGaussianBlur").attr("stdDeviation", "3.5").attr("result", "coloredBlur");
+    const feMerge = filter.append("feMerge");
     feMerge.append("feMergeNode").attr("in", "coloredBlur");
     feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-    // Create 3D sphere gradient
-    const gradient = defs.append("radialGradient")
-        .attr("id", "sphereGradient")
-        .attr("cx", "30%")
-        .attr("cy", "30%");
-    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#ffffff").attr("stop-opacity", 1);
-    gradient.append("stop").attr("offset", "100%").attr("stop-color", "#6fffe9").attr("stop-opacity", 1);
+    // Zoom setup
+    svg.call(d3.zoom().scaleExtent([0.2, 3]).on("zoom", (e) => container.attr("transform", e.transform)));
 
-    const gradientRed = defs.append("radialGradient")
-        .attr("id", "sphereGradientRed")
-        .attr("cx", "30%")
-        .attr("cy", "30%");
-    gradientRed.append("stop").attr("offset", "0%").attr("stop-color", "#ffffff").attr("stop-opacity", 1);
-    gradientRed.append("stop").attr("offset", "100%").attr("stop-color", "#ff4d4d").attr("stop-opacity", 1);
-
-    // D3 Container with Zoom
-    const container = svg.append("g");
-    svg.call(d3.zoom().scaleExtent([0.1, 4]).on("zoom", (event) => {
-        container.attr("transform", event.transform);
-    }));
-
-    // Data structure
-    let nodes = [{ id: "Singapore", label: "ICC Singapore", size: 28, isSeed: true }];
+    let nodes = [{ id: "Singapore", label: "ICC Singapore", size: 30, isSeed: true, rawKey: "CENTER" }];
     let links = [];
 
-    // Force Simulation (Physics engine)
+    // Physics Engine with "Affinity" focus
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(160))
-        .force("charge", d3.forceManyBody().strength(-800))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.isAffinity ? 60 : 180))
+        .force("charge", d3.forceManyBody().strength(-900))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide().radius(d => d.size * 2 + 5));
+        .force("collision", d3.forceCollide().radius(50));
 
-    // D3 Update function (Visuals rendering)
     function update() {
-        const link = container.selectAll(".link")
-            .data(links, d => `${d.source.id}-${d.target.id}`)
+        const link = container.selectAll(".link").data(links, d => d.source.id + "-" + d.target.id)
             .join("line")
-            .attr("class", "link")
-            .attr("stroke", "#5bc0be")
-            .attr("stroke-opacity", 0.1) // Subtle lines
-            .attr("stroke-width", 1.5)
-            .style("pointer-events", "none");
+            .attr("stroke", d => d.isAffinity ? "#6fffe9" : "#3a506b")
+            .attr("stroke-opacity", d => d.isAffinity ? 0.6 : 0.2)
+            .attr("stroke-width", d => d.isAffinity ? 1 : 0.5)
+            .attr("stroke-dasharray", d => d.isAffinity ? "none" : "5,5");
 
-        const node = container.selectAll(".node")
-            .data(nodes, d => d.id)
+        const node = container.selectAll(".node").data(nodes, d => d.id)
             .join("g")
-            .attr("class", "node")
             .call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended));
 
-        // Create the Spherical Nodes
-        node.selectAll("circle")
-            .data(d => [d])
-            .join("circle")
-            .attr("r", d => d.size || 14)
-            .attr("fill", d => d.isSeed ? "url(#sphereGradientRed)" : "url(#sphereGradient)")
-            .style("filter", "url(#glow)") // Apply Glow
-            .style("stroke", d => d.isSeed ? "rgba(255, 77, 77, 0.4)" : "rgba(111, 255, 233, 0.4)")
-            .style("stroke-width", 2);
+        node.selectAll("circle").data(d => [d]).join("circle")
+            .attr("r", d => d.size || 15)
+            .attr("fill", d => d.isSeed ? "#ff4d4d" : "#0b132b")
+            .attr("stroke", d => d.isSeed ? "#ff4d4d" : "#6fffe9")
+            .attr("stroke-width", 2)
+            .style("filter", "url(#glow)");
 
-        // Advanced Labels
-        const labels = node.selectAll("text")
-            .data(d => [d])
-            .join("text")
-            .attr("class", "label")
+        node.selectAll("text").data(d => [d]).join("text")
             .attr("text-anchor", "middle")
-            .attr("dy", d => d.size ? d.size + 20 : 34) // Position below sphere
+            .attr("dy", d => d.size ? d.size + 25 : 40)
             .style("pointer-events", "none")
-            .style("text-shadow", "0 0 5px rgba(0,0,0,1)"); // Text shadow for visibility
-
-        labels.selectAll("tspan")
-            .data(d => d.label.split(': ')) // Split Name: Keyword
-            .join("tspan")
-            .attr("x", 0)
-            .attr("dy", (d, i) => i * 15) // Stacked text
-            .text(d => d)
-            .attr("font-size", (d, i) => i === 0 ? "13px" : "11px") // Name larger than keyword
-            .attr("fill", (d, i) => i === 0 ? "#E0E1DD" : "#5bc0be") // Grey for name, Cyan for keyword
-            .style("font-weight", (d, i) => i === 0 ? "500" : "100");
+            .style("font-size", "11px")
+            .style("fill", "#E0E1DD")
+            .text(d => d.label);
 
         simulation.nodes(nodes);
         simulation.force("link").links(links);
-        simulation.alpha(0.8).restart(); // High restart alpha for movement
+        simulation.alpha(0.5).restart();
 
         simulation.on("tick", () => {
             link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
@@ -233,80 +118,60 @@
             node.attr("transform", d => `translate(${d.x},${d.y})`);
         });
 
-        // Update Stats UI
-        document.getElementById('stats').innerText = `${nodes.length - 1} Bonds Synthesized`;
+        document.getElementById('stats').innerText = `${nodes.length - 1} Researchers Interconnected`;
     }
 
-    // Load data from Google Sheet on startup
     window.onload = function() {
-        fetch(G_SCRIPT_URL)
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(item => {
-                    const nodeId = `${item.name}-${item.keyword}`.replace(/\s+/g, '');
-                    // Prevent duplicates and don't re-add Singapore seed
-                    if (!nodes.find(n => n.id === nodeId) && item.name !== "ICC Singapore") {
-                        nodes.push({ id: nodeId, group: 2, label: `${item.name}: ${item.keyword}` });
-                        links.push({ source: "Singapore", target: nodeId });
-                    }
-                });
-                update();
-            })
-            .catch(err => {
-                console.log("Molecule loading error or empty sheet.");
-                update(); // Load seed anyway
-            });
+        fetch(G_SCRIPT_URL).then(res => res.json()).then(data => {
+            if(data) data.forEach(item => processEntry(item.name, item.keyword, false));
+            update();
+        });
     };
 
-    function addBond() {
-        const nameInput = document.getElementById('name');
-        const keyInput = document.getElementById('keyword');
-        const name = nameInput.value.trim();
-        const key = keyInput.value.trim();
+    function processEntry(name, keyword, isNew) {
+        const id = (name + keyword).replace(/\s+/g, '');
+        if (nodes.find(n => n.id === id) || name === "ICC Singapore") return;
+
+        const newNode = { id: id, label: `${name}: ${keyword}`, rawKey: keyword.toLowerCase() };
         
-        if(!name || !key) return; // Basic check
+        // AFFINITY LOGIC: Look for peers with similar keywords
+        let connectedToPeer = false;
+        nodes.forEach(existingNode => {
+            if (!existingNode.isSeed && (existingNode.rawKey.includes(newNode.rawKey) || newNode.rawKey.includes(existingNode.rawKey))) {
+                links.push({ source: existingNode.id, target: newNode.id, isAffinity: true });
+                connectedToPeer = true;
+            }
+        });
 
-        const nodeId = `${name}-${key}`.replace(/\s+/g, '');
-        if (nodes.find(node => node.id === nodeId)) {
-            alert("This research bond is already synthesized.");
-            return;
-        }
+        // Always maintain a tether to Singapore (The Anchor)
+        links.push({ source: "Singapore", target: newNode.id, isAffinity: false });
+        
+        nodes.push(newNode);
+        if(isNew) update();
+    }
 
-        // Add to UI immediately (visual reward)
-        nodes.push({ id: nodeId, group: 2, label: `${name}: ${key}` });
-        links.push({ source: "Singapore", target: nodeId });
-        update();
+    function addBond() {
+        const n = document.getElementById('name').value.trim();
+        const k = document.getElementById('keyword').value.trim();
+        if (!n || !k) return;
 
-        // Save to Google Sheet permanently (silent post)
+        processEntry(n, k, true);
+
         fetch(G_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: name, keyword: key })
+            body: JSON.stringify({ name: n, keyword: k })
         });
 
-        // Clear inputs
-        nameInput.value = '';
-        keyInput.value = '';
+        document.getElementById('name').value = '';
+        document.getElementById('keyword').value = '';
     }
 
-    // Dragging physics behavior
-    function dragstarted(event) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        event.subject.fx = event.subject.x;
-        event.subject.fy = event.subject.y;
-    }
-    function dragged(event) {
-        event.subject.fx = event.x;
-        event.subject.fy = event.y;
-    }
-    function dragended(event) {
-        if (!event.active) simulation.alphaTarget(0);
-        event.subject.fx = null;
-        event.subject.fy = null;
-    }
+    function dragstarted(e) { if (!e.active) simulation.alphaTarget(0.3).restart(); e.subject.fx = e.x; e.subject.fy = e.y; }
+    function dragged(e) { e.subject.fx = e.x; e.subject.fy = e.y; }
+    function dragended(e) { if (!e.active) simulation.alphaTarget(0); e.subject.fx = null; e.subject.fy = null; }
 
-    update(); // Initial load
+    update();
 </script>
 </body>
 </html>
