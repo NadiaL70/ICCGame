@@ -2,38 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ICC Singapore: One World, One Chemistry</title>
+    <title>ICC 2026: One World, One Chemistry</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body { 
-            margin: 0; 
-            background: #050a14; 
-            color: #ffffff; 
-            font-family: 'Inter', 'Helvetica Neue', sans-serif; 
-            overflow: hidden; 
-        }
+        body { margin: 0; background: #02040a; color: #fff; font-family: 'Courier New', monospace; overflow: hidden; }
         #ui-layer { 
-            position: absolute; top: 30px; left: 30px; 
-            background: rgba(10, 20, 40, 0.8); 
-            padding: 30px; border-radius: 4px; z-index: 10; 
-            border-left: 4px solid #00f2ff; 
-            width: 300px; backdrop-filter: blur(20px); 
-            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            position: absolute; top: 30px; left: 30px; z-index: 10;
+            background: rgba(0,0,0,0.8); padding: 25px; border: 1px solid #00f2ff;
+            box-shadow: 0 0 20px rgba(0,242,255,0.2); width: 280px;
         }
-        h1 { font-size: 14px; margin: 0; color: #00f2ff; letter-spacing: 4px; text-transform: uppercase; }
-        h2 { font-size: 24px; margin: 10px 0; font-weight: 300; }
-        p { font-size: 12px; opacity: 0.6; line-height: 1.6; margin-bottom: 25px; }
+        h1 { font-size: 12px; letter-spacing: 5px; color: #00f2ff; margin: 0; }
+        h2 { font-size: 18px; margin: 10px 0; font-weight: 100; text-transform: uppercase; }
         input { 
-            width: 100%; padding: 12px; margin: 5px 0; border: none;
-            background: rgba(255,255,255,0.05); color: #00f2ff; 
-            border-bottom: 1px solid rgba(0,242,255,0.3); outline: none;
+            width: 100%; padding: 10px; margin: 8px 0; background: transparent; 
+            border: 1px solid #333; color: #00f2ff; outline: none; box-sizing: border-box;
         }
+        input:focus { border-color: #00f2ff; }
         button { 
-            width: 100%; padding: 15px; background: #00f2ff; border: none; 
-            font-weight: 900; cursor: pointer; margin-top: 20px; color: #050a14; 
-            text-transform: uppercase; letter-spacing: 2px;
+            width: 100%; padding: 12px; background: #00f2ff; border: none; 
+            color: #000; font-weight: bold; cursor: pointer; margin-top: 10px;
         }
-        #stats { font-size: 9px; margin-top: 20px; color: #00f2ff; opacity: 0.5; text-align: center; }
+        #stats { font-size: 9px; color: #555; margin-top: 15px; text-align: center; }
         svg { width: 100vw; height: 100vh; }
     </style>
 </head>
@@ -41,64 +30,74 @@
 
 <div id="ui-layer">
     <h1>ICC 2026</h1>
-    <h2>One World, One Chemistry</h2>
-    <p>The global community is a single growing organism. Synthesize your place in the chain.</p>
+    <h2>Molecular Synthesis</h2>
     <input type="text" id="name" placeholder="RESEARCHER NAME">
-    <input type="text" id="keyword" placeholder="CHEMICAL DOMAIN">
-    <button onclick="addBond()">Synthesize</button>
-    <div id="stats">COMMUNITY ENTHALPY: STABLE</div>
+    <input type="text" id="keyword" placeholder="RESEARCH AREA (e.g. POLYMERS)">
+    <button onclick="addBond()">SYNTHESIZE</button>
+    <div id="stats">SYSTEM STATUS: READY</div>
 </div>
 
 <svg id="canvas"></svg>
 
 <script>
     const G_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxq7zoarTNZoyoOHcYjeBmqx8h5VGd3NYqWQs6JISqUi-J_Ik-4rBa6W9kpmOpD6lNA/exec';
-
+    
     const width = window.innerWidth, height = window.innerHeight;
     const svg = d3.select("#canvas");
     const container = svg.append("g");
 
-    // Atomic Shader Filters
+    // Glow effect
     const defs = svg.append("defs");
-    const glow = defs.append("filter").attr("id", "atom-glow");
-    glow.append("feGaussianBlur").attr("stdDeviation", "4").attr("result", "blur");
-    const merge = glow.append("feMerge");
-    merge.append("feMergeNode").attr("in", "blur");
-    merge.append("feMergeNode").attr("in", "SourceGraphic");
+    const glow = defs.append("filter").attr("id", "glow");
+    glow.append("feGaussianBlur").attr("stdDeviation", "3").attr("result", "blur");
+    const feMerge = glow.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "blur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
     svg.call(d3.zoom().on("zoom", (e) => container.attr("transform", e.transform)));
 
-    // SINGAPORE IS THE UNIQUE SEED (ID: ORIGIN)
-    let nodes = [{ id: "ORIGIN", label: "SINGAPORE", size: 25, isSeed: true, key: "core" }];
+    let nodes = [];
     let links = [];
+    let singaporeCreated = false;
 
+    // Simulation with RIGID constraints
     const simulation = d3.forceSimulation(nodes)
-        .force("link", d3.forceLink(links).id(d => d.id).distance(90).strength(0.8))
-        .force("charge", d3.forceManyBody().strength(-600))
+        .force("link", d3.forceLink(links).id(d => d.id).distance(80).strength(1)) // Strength 1 = Rigid
+        .force("charge", d3.forceManyBody().strength(-400))
         .force("center", d3.forceCenter(width / 2, height / 2))
-        .force("collision", d3.forceCollide().radius(45));
+        .force("collision", d3.forceCollide().radius(50));
 
     function update() {
         const link = container.selectAll(".link").data(links, d => d.source.id + "-" + d.target.id)
-            .join("line").attr("stroke", "#00f2ff").attr("stroke-opacity", 0.3).attr("stroke-width", 2);
+            .join("line")
+            .attr("stroke", "#00f2ff")
+            .attr("stroke-opacity", 0.5)
+            .attr("stroke-width", 2);
 
         const node = container.selectAll(".node").data(nodes, d => d.id)
-            .join("g").call(d3.drag().on("start", dragstarted).on("drag", dragged).on("end", dragended));
+            .join("g")
+            .call(d3.drag()
+                .on("start", dragstarted)
+                .on("drag", dragged)
+                .on("end", dragended));
 
         node.selectAll("circle").data(d => [d]).join("circle")
-            .attr("r", d => d.size || 12)
-            .attr("fill", d => d.isSeed ? "#ff0055" : "#050a14")
-            .attr("stroke", d => d.isSeed ? "#ff0055" : "#00f2ff")
-            .attr("stroke-width", 3).style("filter", "url(#atom-glow)");
+            .attr("r", d => d.isSeed ? 18 : 10)
+            .attr("fill", "#02040a")
+            .attr("stroke", d => d.isSeed ? "#ff4d4d" : "#00f2ff")
+            .attr("stroke-width", 2)
+            .style("filter", "url(#glow)");
 
         node.selectAll("text").data(d => [d]).join("text")
-            .attr("text-anchor", "middle").attr("dy", d => d.size ? d.size + 25 : 35)
-            .style("font-size", "10px").style("fill", "#00f2ff").style("letter-spacing", "1px")
+            .attr("text-anchor", "middle")
+            .attr("dy", d => d.isSeed ? 30 : 25)
+            .style("font-size", "10px")
+            .style("fill", "#fff")
             .text(d => d.label.toUpperCase());
 
         simulation.nodes(nodes);
         simulation.force("link").links(links);
-        simulation.alpha(0.3).restart();
+        simulation.alpha(0.2).restart();
 
         simulation.on("tick", () => {
             link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
@@ -107,52 +106,77 @@
         });
     }
 
+    function createSingaporeNode() {
+        if (singaporeCreated) return "SINGAPORE_ANCHOR";
+        const sg = { id: "SINGAPORE_ANCHOR", label: "SINGAPORE ICC", isSeed: true };
+        nodes.push(sg);
+        singaporeCreated = true;
+        return sg.id;
+    }
+
+    function grow(name, area) {
+        const areaId = "AREA_" + area.toUpperCase().replace(/\s+/g, '');
+        const personId = (name + area).replace(/\s+/g, '');
+
+        if (nodes.find(n => n.id === personId)) return;
+
+        // 1. Ensure Singapore exists now that data is present
+        const anchorId = createSingaporeNode();
+
+        // 2. Create Area Hub if it doesn't exist
+        let areaNode = nodes.find(n => n.id === areaId);
+        if (!areaNode) {
+            areaNode = { id: areaId, label: area.toUpperCase(), isArea: true };
+            nodes.push(areaNode);
+            links.push({ source: anchorId, target: areaId });
+        }
+
+        // 3. Attach person to the Area
+        nodes.push({ id: personId, label: name.toUpperCase() });
+        links.push({ source: areaId, target: personId });
+    }
+
     window.onload = function() {
         fetch(G_SCRIPT_URL).then(res => res.json()).then(data => {
-            if(data) data.forEach(item => {
-                // Ensure we don't re-add Singapore or empty rows
-                if(item.name && item.name !== "SINGAPORE" && item.name !== "ORIGIN") {
-                    growOrganism(item.name, item.keyword);
-                }
-            });
-            update();
+            if(data && data.length > 0) {
+                data.forEach(item => {
+                    if(item.name && item.keyword) grow(item.name, item.keyword);
+                });
+                update();
+            }
         });
     };
 
-    function growOrganism(name, keyword) {
-        const id = (name + keyword).replace(/\s+/g, '');
-        if (nodes.find(n => n.id === id)) return;
-
-        const newNode = { id: id, label: `${name}`, key: keyword.toLowerCase() };
-        
-        // CHEMISTRY LOGIC: Find a parent. 
-        // 1. Try to find someone with a similar keyword.
-        // 2. If not, bond to the most recent node added (forming a chain).
-        let parent = nodes.find(n => !n.isSeed && (n.key.includes(newNode.key) || newNode.key.includes(n.key)));
-        
-        if (!parent) {
-            parent = nodes[nodes.length - 1]; // Bond to the latest leaf
-        }
-
-        links.push({ source: parent.id, target: newNode.id });
-        nodes.push(newNode);
-    }
-
     function addBond() {
         const n = document.getElementById('name').value.trim();
-        const k = document.getElementById('keyword').value.trim();
-        if (!n || !k) return;
+        const a = document.getElementById('keyword').value.trim();
+        if (!n || !a) return;
 
-        growOrganism(n, k);
+        grow(n, a);
         update();
 
-        fetch(G_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ name: n, keyword: k }) });
-        document.getElementById('name').value = ''; document.getElementById('keyword').value = '';
+        fetch(G_SCRIPT_URL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify({ name: n, keyword: a }) 
+        });
+
+        document.getElementById('name').value = '';
+        document.getElementById('keyword').value = '';
     }
 
-    function dragstarted(e) { if (!e.active) simulation.alphaTarget(0.3).restart(); e.subject.fx = e.x; e.subject.fy = e.y; }
-    function dragged(e) { e.subject.fx = e.x; e.subject.fy = e.y; }
-    function dragended(e) { if (!e.active) simulation.alphaTarget(0); e.subject.fx = null; e.subject.fy = null; }
+    function dragstarted(e) {
+        if (!e.active) simulation.alphaTarget(0.1).restart();
+        e.subject.fx = e.x; e.subject.fy = e.y;
+    }
+    function dragged(e) {
+        e.subject.fx = e.x; e.subject.fy = e.y;
+    }
+    function dragended(e) {
+        if (!e.active) simulation.alphaTarget(0);
+        // Unlike previous versions, we don't null the FX/FY to allow 
+        // researchers to manually "arrange" their clusters rigidly.
+    }
 
     update();
 </script>
